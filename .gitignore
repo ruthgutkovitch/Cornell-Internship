@@ -1,0 +1,10 @@
+# ignore all files
+*
+
+# except
+!.gitignore
+!Plots/
+!drop_transactions.py
+!Listen_to_mempool.ts
+!Listen_to_mempool.js
+!transactions_per_hour.py
