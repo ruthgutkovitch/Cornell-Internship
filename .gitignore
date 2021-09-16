@@ -3,7 +3,10 @@
 
 # except
 !.gitignore
-!Plots/
+!Plots/Dropped_tx.png
+!Plots/num_transactions_per_hour-31.07.png
+!Plots/transactions_per_hour.png
+!Plots/*
 !drop_transactions.py
 !Listen_to_mempool.ts
 !Listen_to_mempool.js
