@@ -18,14 +18,16 @@ with open('/home/ruth/NFT-study/Ruth/Transactions/12941301_12990000.csv', 'r') a
       #for name, num in functions.items():
       if fun in functions:
         dict_fun[functions[fun]] += 1
+      else:
+        dict_fun[fun] += 1
     
     print(len(dict_fun))
     #print(dict_fun.values())
 
 new_dict = dict(Counter(dict_fun).most_common(5))
 new_dict_value = sum(new_dict.values())
+new_dict['other'] = sum(dict_fun.values())-new_dict_value
 
-#plt.bar(new_dict.keys(), new_dict.values())
 
 mylabels = new_dict.keys()
 plt.pie(new_dict.values(), autopct='%.2f')
