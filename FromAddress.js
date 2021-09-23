@@ -3,51 +3,56 @@ import { writeFileSync } from "fs";
 import {createReadStream} from "fs";
 import readline from "readline";
 
-const provider = new ethers.providers.WebSocketProvider(
-    "http://127.0.0.1:8748"
-  );
-
-//Total number of drop transactions: 5256225
-const file_r ="dropped_tx.txt";
+const mem ="pending_tx.txt";
 const file_w = "NullAddress.txt";
+const tx = "result.txt";
 
-var rd = readline.createInterface({
-    input: createReadStream(file_r)
-    //output: process.stdout,
-    //console: false
+//define sets
+var tx_set = new Set();
+var mem_set = new Set();
+
+//read tx 
+var rd_tx =readline.createInterface({
+    input: createReadStream(tx)
+}); 
+rd_tx.on('line',function(line){
+    tx_set.add(line)
+}) 
+
+//read transactions from mempool
+var rd_mem = readline.createInterface({
+    input: createReadStream(mem)
 });
 
-var from_address= new Set();
-rd.on('line', function(line) {
+rd_mem.on('line', function(line) {
     try{
         var txy = JSON.parse(line);
-    //console.log(obj)
-        //if (txy['from']==='0x0000000000000000000000000000000000000000'){
+        if(tx_set.has(txy['hash'])==false){
             let unsigned_txy = undefined; 
             if (txy['type'] == 0) {
                 unsigned_txy = {
-                chainId: txy['chainId'],
-                data: txy['data'],
-                gasPrice: txy['gasPrice'],
-                gasLimit: txy['gasLimit'],
-                nonce: txy['nonce'],
-                to: txy['to'],
-                type: txy['type'],
-                value: txy['value'],
-            };
+                    chainId: txy['chainId'],
+                    data: txy['data'],
+                    gasPrice: txy['gasPrice'],
+                    gasLimit: txy['gasLimit'],
+                    nonce: txy['nonce'],
+                    to: txy['to'],
+                    type: txy['type'],
+                    value: txy['value'],
+                };
             } else if (txy['type'] == 2) {
                 unsigned_txy = {
-                chainId: txy['chainId'],
-                data: txy['data'],
-                gasPrice: txy['gasPrice'],
-                gasLimit: txy['gasLimit'],
-                maxFeePerGas: txy['maxFeePerGas'],
-                maxPriorityFeePerGas: txy['maxPriorityFeePerGas'],
-                nonce: txy['nonce'],
-                to: txy['to'],
-                type: txy['type'],
-                value: txy['value'],
-            };
+                    chainId: txy['chainId'],
+                    data: txy['data'],
+                    gasPrice: txy['gasPrice'],
+                    gasLimit: txy['gasLimit'],
+                    maxFeePerGas: txy['maxFeePerGas'],
+                    maxPriorityFeePerGas: txy['maxPriorityFeePerGas'],
+                    nonce: txy['nonce'],
+                    to: txy['to'],
+                    type: txy['type'],
+                    value: txy['value'],
+                };
             } else {
                 return;
             }
@@ -68,19 +73,21 @@ rd.on('line', function(line) {
                 } else{
                     ad ='Not same address';
                 }
-                from_address.add(recoveredAddress);
-                if (txy['from']==='0x0000000000000000000000000000000000000000'){
+                mem_set.add(recoveredAddress);
+                /*if (txy['from']==='0x0000000000000000000000000000000000000000'){
                     writeFileSync(file_w ,"\n" + `TX HASH: ${txy['hash']}`+ "\n" +`recovered address: ${recoveredAddress}`+"\n"+
                     `Ethers address: ${txy['from']}`+ "\n" + ad +"\n"+ line + "," + "\n",{
                     encoding: "utf8",flag: "a+"});
-                }
+                } */   
             }
+        }
+           
     }
-
     catch(err){
-        //console.error(err);
+        console.error(err);
         return;
     }
-    
+    writeFileSync(file_w, `Number of sending addresses: ${mem_set.size}`+ "\n",{encoding: "utf8",flag: "a+"}); 
 });
 
+//console.log(from_address.size
