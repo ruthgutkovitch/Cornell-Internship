@@ -5,8 +5,14 @@ import pandas as pd
 file = r'/home/ruth/NFT-study/javascript-stuff/Ruth/13300000_13340000.csv'
 fail, success = 0, 0
 
-w3 = Web3(Web3.WebsocketProvider("ws://127.0.0.1:8646"))
-print(w3.isConnected())
+#w3 = Web3(Web3.WebsocketProvider('ws://127.0.0.1:8646'))
+w3 = Web3(Web3.HTTPProvider('http://localhost:8646'))
+#try:
+ # print(w3.isConnected())
+#except Exception as e:
+  #print(e)
+  #print("error")
+print(w3.eth.get_block('latest'))
 
 #with open(file, 'r') as r:
    # reader = pd.read_csv(r)

@@ -22,7 +22,9 @@ rd_tx.on('line',function(line){
                 }else{
                     writeFileSync(file_w ,"smart contract" +"\n",{encoding: "utf8",flag: "a+"});
                    }
-                })
+                //console.log(result);
+
+                });
             }catch(err){
                 console.log(err);
                 return;

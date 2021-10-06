@@ -4,7 +4,7 @@ import sys
 from web3 import Web3
 
 START_BLOCK=13300000 
-END_BLOCK=13340000 
+END_BLOCK=13310000 
 STEP_SIZE = 10000
 
 
