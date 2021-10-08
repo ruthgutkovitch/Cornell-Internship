@@ -4,7 +4,8 @@ import csv
 import os
 
 def draw_pie(title,values,names,file_name):
-    plt.pie(values, autopct='%.2f')
+    colors = ['pink',"c",'lightblue',"lavender","lightcoral","wheat"]
+    plt.pie(values, autopct='%.2f',colors=colors)
     plt.legend(labels=names)
     plt.title(title)
     plt.savefig('/home/ruth/NFT-study/Ruth/Plots/{}.png'.format(file_name))
@@ -18,7 +19,6 @@ def draw_plot(x_values,y_values,x_label,y_label,title,file_name):
     plt.yticks(y_values)
     plt.savefig('/home/ruth/NFT-study/Ruth/Plots/{}.png'.format(file_name))
     
-
 def csv_to_txt(file, name):
     with open(file,'r') as file_r:
         with open('result.txt','w') as file_w:
@@ -57,3 +57,4 @@ def split_large_file(file):
             with open('{}.txt'.format(num), 'a') as w:
                 w.write(line)
             counter += 1
+
