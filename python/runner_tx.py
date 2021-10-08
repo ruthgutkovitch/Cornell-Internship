@@ -10,9 +10,9 @@ import errno
 
 def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):    
     # creates empty csv file with columns only
-    if (not os.path.exists(f'Transactions/{START_BLOCK}_{END_BLOCK}.csv')):
+    if (not os.path.exists(f'{START_BLOCK}_{END_BLOCK}.csv')):
         df = pd.DataFrame(columns=['hash','nonce','block_hash','block_number','transaction_index','from_address','to_address','value','gas','gas_price','input','block_timestamp','max_fee_per_gas','max_priority_fee_per_gas','transaction_type'])
-        df.to_csv(f'Transactions/{START_BLOCK}_{END_BLOCK}.csv', index=False)
+        df.to_csv(f'{START_BLOCK}_{END_BLOCK}.csv', index=False)
 
     # can remove 'else'' if you want to append existing file
     else:
@@ -54,7 +54,7 @@ def get_column_from_transaction():
     transaction_hashes_filename = 'trans_hashes.csv'
     transaction_filename = 'transactions.csv'
 
-        cmd2 = [
+    cmd2 = [
                 "ethereumetl",
                 "extract_csv_column",
                 "--input",
@@ -65,17 +65,17 @@ def get_column_from_transaction():
                 transaction_hashes_filename
         ]
 
-        process2 = subprocess.Popen(cmd2, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if process2.stdout:
-            for line in iter(process2.stdout.readline, ''):
+    process2 = subprocess.Popen(cmd2, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if process2.stdout:
+        for line in iter(process2.stdout.readline, ''):
                 print(line,end='')
                 sys.stdout.flush()
-            process2.wait()
+        process2.wait()
 
 def get_receipt():
     transaction_hashes_filename = 'trans_hashes.csv'
     receipts_filename = 'receipts.csv'
-        cmd3 = [
+    cmd3= [
             "ethereumetl",
             "export_receipts_and_logs",
             "--transaction-hashes",
@@ -84,11 +84,11 @@ def get_receipt():
             "http://127.0.01:8646",
             "--receipts-output",
             receipts_filename
-        ]
-        process3 = subprocess.Popen(cmd3, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if process3.stdout:
-            for line in iter(process3.stdout.readline, ''):
+    ]
+    process3 = subprocess.Popen(cmd3, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    if process3.stdout:
+        for line in iter(process3.stdout.readline, ''):
                 print(line,end='')
                 sys.stdout.flush()
-            process.wait()
+        process.wait()
         

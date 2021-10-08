@@ -4,7 +4,7 @@ import csv
 import os
 
 def draw_pie(title,values,names,file_name):
-    colors = ['pink',"c",'lightblue',"lavender","lightcoral","wheat"]
+    colors = ["pink","c","lightblue","lavender","lightcoral","wheat"]
     plt.pie(values, autopct='%.2f',colors=colors)
     plt.legend(labels=names)
     plt.title(title)
@@ -38,7 +38,7 @@ def opensea_tx(file):
         writer = csv.writer(file_w) 
         writer.writerow(head)
         with open(file, 'r') as file_r:
-            reader = pd.read_csv(file_r,sep=',',usecols=names)
+            reader = pd.read_csv(file_r,sep=',')
             for row in reader.itertuples():
                 if row.to_address == openSea_Contract:
                     writer.writerow(row)
@@ -58,3 +58,19 @@ def split_large_file(file):
                 w.write(line)
             counter += 1
 
+def get_data_from_tx(file):
+    result = 'result.txt'
+    with open(file,'r') as file_r:
+        reader = pd.read_csv(file_r,sep=',')
+        with open(result,'w') as file_w:
+            for row in reader.itertuples():
+                file_w.write(str(row.to_address)+"\n")
+
+def get_data_about_address(file,data,address):
+    result = 'result.txt'
+    with open(file,'r') as file_r:
+        reader = pd.read_csv(file_r,sep=',')
+        with open(result,'w') as file_w:
+            for row in reader.itertuples():
+                if row.to_address == address:
+                    result.write(row.data)
