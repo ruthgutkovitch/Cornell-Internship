@@ -1,4 +1,5 @@
 from web3 import Web3
+from utils import *
 
 w3 = Web3(Web3.WebsocketProvider('ws://127.0.0.1:8646'))
 START_BLOCK=13176499
