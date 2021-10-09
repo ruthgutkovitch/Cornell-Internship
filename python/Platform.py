@@ -2,6 +2,7 @@ import pandas as pd
 import csv
 from collections import defaultdict
 from utils import *
+from runner_tx import * 
 
 file = r'/home/ruth/NFT-study/Ruth/transactions.csv'
 
@@ -10,11 +11,15 @@ platforms = {'0x7Be8076f4EA4A4AD08075C2508e481d6C946D12b'.lower():'OpenSea','0x6
  '0x87d73E916D7057945c9BcD8cdd94e42A6F47f776'.lower():'nftx','0x88341d1a8F672D2780C8dC725902AAe72F143B0c'.lower():'nftfi',
  '0xD8E3FB3b08eBA982F2754988d70D57eDc0055ae6'.lower():'zora'}
 
-
-
 #nfttrader = ''.lower()
 #foundation = ''.lower()
 #nft20 = ''.lowe 
+
+START_BLOCK=13276499
+END_BLOCK=13376499 
+STEP_SIZE=200000
+
+get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
 
 values = defaultdict(int)
 
