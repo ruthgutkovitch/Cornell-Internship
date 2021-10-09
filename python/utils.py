@@ -5,6 +5,16 @@ import os
 
 colors = ["pink","c","lightblue","lavender","lightcoral","wheat","beige"]
 
+def draw_bar(title,keys,values,x_label,y_label,file_name):
+    bars = plt.bar(keys,values,color="c")
+    for bar in bars:
+        height = bar.get_height()
+        plt.text(bar.get_x(),height,height)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.savefig('/home/ruth/NFT-study/Ruth/Plots/{}.png'.format(file_name))
+
 def draw_donut(title,values,names,file_name):
     plt.pie(values, autopct='%.2f',colors=colors, rotatelabels =True,labels=names,startangle=150)
     circle = plt.Circle(xy=(0,0),radius=0.75,facecolor='white')

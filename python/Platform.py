@@ -15,19 +15,30 @@ platforms = {'0x7Be8076f4EA4A4AD08075C2508e481d6C946D12b'.lower():'OpenSea','0x6
 #foundation = ''.lower()
 #nft20 = ''.lowe 
 
+ether = lambda value: value / 1e18
+
 START_BLOCK=13276499
 END_BLOCK=13376499 
 STEP_SIZE=200000
 
-get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
+#get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
+
 
 values = defaultdict(int)
 
 with open(file,'r') as file_r:
     reader = pd.read_csv(file_r)
     for row in reader.itertuples():
-        address = row.to_address
+        address = str(row.to_address).lower()
         if address in platforms:
-            values[platforms[address]] += 1
+            values[platforms[address]] += ether(int(row.value))
 
-draw_pie('Comparing number of tx of different platforms',values.values(),values.keys(),'platforms')
+for key in values:
+    values[key] = round(values[key],2)
+
+print(values)
+
+
+draw_bar('Comparing volume of different platforms',values.keys(),values.values(),'Platforms','Volume','platforms-volume')
+
+#draw_pie('Comparing number of tx of different platforms',values.values(),values.keys(),'platforms-number')
