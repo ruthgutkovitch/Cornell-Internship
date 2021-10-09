@@ -18,5 +18,5 @@ with open(file,'r') as f:
 new_dict = dict(Counter(dict_address).most_common(6))
 new_dict['other'] =sum(dict_address.values())-sum(new_dict.values())    
 
-draw_donut('Most Common to Addresses',new_dict.values(),contracts,'To_address')
+draw_donut('The most common address for receiving transactions',new_dict.values(),contracts,'To_address')
 

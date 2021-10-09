@@ -3,8 +3,16 @@ import pandas as pd
 import csv
 import os
 
+colors = ["pink","c","lightblue","lavender","lightcoral","wheat","beige"]
+
+def draw_donut(title,values,names,file_name):
+    plt.pie(values, autopct='%.2f',colors=colors, rotatelabels =True,labels=names,startangle=150)
+    circle = plt.Circle(xy=(0,0),radius=0.75,facecolor='white')
+    plt.gca().add_artist(circle)
+    plt.title(title)
+    plt.savefig('/home/ruth/NFT-study/Ruth/Plots/{}.png'.format(file_name))
+
 def draw_pie(title,values,names,file_name):
-    colors = ["pink","c","lightblue","lavender","lightcoral","wheat"]
     plt.pie(values, autopct='%.2f',colors=colors)
     plt.legend(labels=names)
     plt.title(title)
@@ -74,3 +82,4 @@ def get_data_about_address(file,data,address):
             for row in reader.itertuples():
                 if row.to_address == address:
                     result.write(row.data)
+

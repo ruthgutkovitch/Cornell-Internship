@@ -25,4 +25,4 @@ with open(file,'r') as file_r:
         if address in platforms:
             values[platforms[address]] += 1
 
-draw_pie('Comparing Platforms',values.values(),values.keys(),'platforms')
+draw_pie('Comparing number of tx of different platforms',values.values(),values.keys(),'platforms')
