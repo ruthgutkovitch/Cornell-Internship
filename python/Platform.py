@@ -23,7 +23,6 @@ STEP_SIZE=200000
 
 #get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
 
-
 values = defaultdict(int)
 
 with open(file,'r') as file_r:
@@ -31,14 +30,17 @@ with open(file,'r') as file_r:
     for row in reader.itertuples():
         address = str(row.to_address).lower()
         if address in platforms:
-            values[platforms[address]] += ether(int(row.value))
+            values[platforms[address]] +=ether(int(row.value))
+            #values[platforms[address]].add(str(row.from_address).lower())
 
+size = []
 for key in values:
     values[key] = round(values[key],2)
+    #size.append(len(values[key]))
+    
 
 print(values)
 
 
-draw_bar('Comparing volume of different platforms',values.keys(),values.values(),'Platforms','Volume','platforms-volume')
+draw_bar('Volume of different platforms',values.keys(),values.values,'Platforms','Volume','platforms-volume')
 
-#draw_pie('Comparing number of tx of different platforms',values.values(),values.keys(),'platforms-number')
