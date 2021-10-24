@@ -10,14 +10,14 @@ import errno
 
 def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):    
     # creates empty csv file with columns only
-    if (not os.path.exists(f'{START_BLOCK}_{END_BLOCK}.csv')):
-        df = pd.DataFrame(columns=['hash','nonce','block_hash','block_number','transaction_index','from_address','to_address','value','gas','gas_price','input','block_timestamp','max_fee_per_gas','max_priority_fee_per_gas','transaction_type'])
-        df.to_csv(f'{START_BLOCK}_{END_BLOCK}.csv', index=False)
+    #if (not os.path.exists(f'{START_BLOCK}_{END_BLOCK}.csv')):
+     #   df = pd.DataFrame(columns=['hash','nonce','block_hash','block_number','transaction_index','from_address','to_address','value','gas','gas_price','input','block_timestamp','max_fee_per_gas','max_priority_fee_per_gas','transaction_type'])
+      #  df.to_csv(f'{START_BLOCK}_{END_BLOCK}.csv', index=False)
 
     # can remove 'else'' if you want to append existing file
-    else:
-        print('file already exists!')
-        raise errno.EEXIST
+    #else:
+       # print('file already exists!')
+        #raise errno.EEXIST
 
     blocks_filename = 'blocks.csv'
     transaction_filename = 'transactions.csv'
@@ -26,7 +26,7 @@ def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int
         curr_end = curr_start + STEP_SIZE - 1
         if curr_end > END_BLOCK:
             curr_end = END_BLOCK
-        blocks_name = f'{START_BLOCK}_{END_BLOCK}'
+        tx_name = f'{curr_start}_{curr_start}' #instead of transaction_filename
 
         cmd = [
                 "ethereumetl",
@@ -35,10 +35,37 @@ def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int
                 str(curr_start),
                 "--end-block",
                 str(curr_end),
-                "--blocks-output",
-                blocks_filename,
                 "--transactions-output",
                 transaction_filename,
+                "--provider-uri",
+                "http://127.0.01:8646"
+        ]
+        #"--blocks-output",
+         # blocks_filename 
+
+        process = subprocess.Popen(cmd, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if process.stdout:
+            for line in iter(process.stdout.readline, ''):
+                print(line,end='')
+                sys.stdout.flush()
+            process.wait()
+
+def get_token_transfers(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
+    for curr_start in range(START_BLOCK, END_BLOCK, STEP_SIZE):
+        curr_end = curr_start + STEP_SIZE - 1
+        if curr_end > END_BLOCK:
+            curr_end = END_BLOCK
+        tx_name = 'token_transfers' + f'{curr_start}_{curr_start}'
+
+        cmd = [
+                "ethereumetl",
+                "export_token_transfers",
+                "--start-block",
+                str(curr_start),
+                "--end-block",
+                str(curr_end),
+                "--output",
+                token_transfers.csv,
                 "--provider-uri",
                 "http://127.0.01:8646"
         ]
@@ -50,7 +77,9 @@ def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int
                 sys.stdout.flush()
             process.wait()
 
-def get_column_from_transaction():
+
+
+def get_column_from_transaction(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
     transaction_hashes_filename = 'trans_hashes.csv'
     transaction_filename = 'transactions.csv'
 
