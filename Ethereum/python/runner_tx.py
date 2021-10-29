@@ -4,9 +4,7 @@ import sys
 import pandas as pd
 import errno
 
-#START_BLOCK=13176499
-#END_BLOCK=13376499 
-#STEP_SIZE=200000
+
 
 def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):    
     # creates empty csv file with columns only
@@ -51,6 +49,7 @@ def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int
             process.wait()
 
 def get_token_transfers(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
+    get_receipt_and_logs(START_BLOCK, END_BLOCK, STEP_SIZE)
     for curr_start in range(START_BLOCK, END_BLOCK, STEP_SIZE):
         curr_end = curr_start + STEP_SIZE - 1
         if curr_end > END_BLOCK:
@@ -59,15 +58,11 @@ def get_token_transfers(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
 
         cmd = [
                 "ethereumetl",
-                "export_token_transfers",
-                "--start-block",
-                str(curr_start),
-                "--end-block",
-                str(curr_end),
+                "extract_token_transfers",
+                "--logs",
+                "logs.csv",
                 "--output",
-                token_transfers.csv,
-                "--provider-uri",
-                "http://127.0.01:8646"
+                "token_transfers.csv"
         ]
 
         process = subprocess.Popen(cmd, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -80,7 +75,7 @@ def get_token_transfers(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
 
 
 def get_column_from_transaction(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
-    transaction_hashes_filename = 'trans_hashes.csv'
+    transaction_hashes_filename = 'trans_hashes.txt'
     transaction_filename = 'transactions.csv'
 
     cmd2 = [
@@ -101,8 +96,9 @@ def get_column_from_transaction(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int
                 sys.stdout.flush()
         process2.wait()
 
-def get_receipt():
-    transaction_hashes_filename = 'trans_hashes.csv'
+def get_receipt_and_logs(START_BLOCK, END_BLOCK, STEP_SIZE):
+    get_column_from_transaction(START_BLOCK, END_BLOCK, STEP_SIZE)
+    transaction_hashes_filename = 'trans_hashes.txt'
     receipts_filename = 'receipts.csv'
     cmd3= [
             "ethereumetl",
@@ -112,12 +108,14 @@ def get_receipt():
             "--provider-uri",
             "http://127.0.01:8646",
             "--receipts-output",
-            receipts_filename
+            receipts_filename,
+            "--logs-output",
+            "logs.csv"
     ]
     process3 = subprocess.Popen(cmd3, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     if process3.stdout:
         for line in iter(process3.stdout.readline, ''):
                 print(line,end='')
                 sys.stdout.flush()
-        process.wait()
+        process3.wait()
         

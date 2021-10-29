@@ -1,9 +1,35 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import csv
 import os
 
 colors = ["pink","c","lightblue","lavender","lightcoral","wheat","beige"]
+
+def autolabel(temp):
+    for i in temp:
+        h = i.get_height()
+        plt.text(i.get_x()+i.get_width()/2,1.05*h,h,ha='center',va='bottom')
+
+def draw_mult_bars(num,v1,v2,v3,x_label,y_label,x_ticks,names,title,file_name):
+    ind = np.arange(num)
+    w = 0.3
+
+    r1 = plt.bar(ind,v1,width=w,align='center')
+    autolabel(r1)
+    r2 = plt.bar(ind+w,v2,width=w,align='center')
+    autolabel(r2)
+    r3 = plt.bar(ind+w*2,v3,width=w,align='center')
+    autolabel(r3)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+
+    plt.legend((r1[0],r2[0],r3[0]),(names[0],names[0],names[0])) 
+    plt.xticks(ind+w,labels=x_ticks)
+    plt.title(title)
+    plt.savefig(os.path.join(directory,'Plots/{}.png'.format(file_name)))
+
+
 
 def draw_bar(title,keys,values,x_label,y_label,file_name,directory):
     bars = plt.bar(keys,values,color="c")
@@ -71,7 +97,7 @@ def split_large_file(file):
     counter , num = 0, 0
     with open(file, 'r') as file:
         for line in file:
-            if counter%100000==0: num += 1
+            if counter%1000000==0: num += 1
             with open('{}.txt'.format(num), 'a') as w:
                 w.write(line)
             counter += 1
@@ -82,7 +108,7 @@ def get_data_from_tx(file):
         reader = pd.read_csv(file_r,sep=',')
         with open(result,'w') as file_w:
             for row in reader.itertuples():
-                file_w.write(str(row.to_address)+"\n")
+                file_w.write(str(row.from_address)+"\n")
 
 def get_data_about_address(file,data,address):
     result = 'result.txt'

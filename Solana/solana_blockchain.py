@@ -4,7 +4,6 @@ from collections import Counter
 import datetime
 from utils import *
 import time
-import re
 
 platforms = {'xxxxa1sKNGwFtw2kFn8XauW9xq8hBZ5kVtcSesTT9fW':'Solanium','METAewgxyPbgwsseH8T16a39CQ5VyVxZi9zXiDPY18m':'Metaplex',
 'G7uYedVqFy97mzjygebnmmaMUVxWHFhNZotY6Zzsprvf':'CoreStarter','HsY8PNar8VExU335ZRYzg89fX7qa4upYu6vPMPFyCDdK':'Solible',
@@ -21,7 +20,6 @@ def getBlocks():
         for i in range(start_block,end_block,1000):
             nums = getConfirmedBlocks(i, i+999)
             file.write(str(nums)+"\n")
-            #time.sleep(20)
             blocks.extend(nums)
             counter += 1
             print(counter)
@@ -35,8 +33,6 @@ def readBlocks():
             new_list = line.split(",")
             blocks.extend(new_list)
     print(len(blocks))
-    #print(blocks[0])
-    #print(blocks[1])
     return blocks 
 
 
@@ -69,7 +65,7 @@ def getTransactions(blocks):
         
 
 if __name__ == "__main__":
-    #blocks = getBlocks()
+    blocks = getBlocks()
     blocks = readBlocks()
     getTransactions(blocks)
 
