@@ -7,18 +7,8 @@ import errno
 
 
 def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):    
-    # creates empty csv file with columns only
-    #if (not os.path.exists(f'{START_BLOCK}_{END_BLOCK}.csv')):
-     #   df = pd.DataFrame(columns=['hash','nonce','block_hash','block_number','transaction_index','from_address','to_address','value','gas','gas_price','input','block_timestamp','max_fee_per_gas','max_priority_fee_per_gas','transaction_type'])
-      #  df.to_csv(f'{START_BLOCK}_{END_BLOCK}.csv', index=False)
-
-    # can remove 'else'' if you want to append existing file
-    #else:
-       # print('file already exists!')
-        #raise errno.EEXIST
-
-    blocks_filename = 'blocks.csv'
-    transaction_filename = 'transactions.csv'
+    blocks_filename = 'blocks_for_compare.csv'
+    transaction_filename = 'transactions_for_compare.csv'
     
     for curr_start in range(START_BLOCK, END_BLOCK, STEP_SIZE):
         curr_end = curr_start + STEP_SIZE - 1
@@ -49,34 +39,38 @@ def get_blocks_and_transactions(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int
             process.wait()
 
 def get_token_transfers(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
-    get_receipt_and_logs(START_BLOCK, END_BLOCK, STEP_SIZE)
+    #get_receipt_and_logs(START_BLOCK, END_BLOCK, STEP_SIZE)
+    counter = 0
     for curr_start in range(START_BLOCK, END_BLOCK, STEP_SIZE):
         curr_end = curr_start + STEP_SIZE - 1
         if curr_end > END_BLOCK:
             curr_end = END_BLOCK
-        tx_name = 'token_transfers' + f'{curr_start}_{curr_start}'
-
-        cmd = [
+        tx_name = 'token_transfers' + f'{curr_start}_{curr_end}'+'.csv'
+        try:
+            cmd = [
                 "ethereumetl",
                 "extract_token_transfers",
                 "--logs",
                 "logs.csv",
                 "--output",
-                "token_transfers.csv"
-        ]
+                tx_name
+            ]
 
-        process = subprocess.Popen(cmd, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        if process.stdout:
-            for line in iter(process.stdout.readline, ''):
-                print(line,end='')
-                sys.stdout.flush()
-            process.wait()
-
-
+            process = subprocess.Popen(cmd, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            if process.stdout:
+                for line in iter(process.stdout.readline, ''):
+                    print(line,end='')
+                    sys.stdout.flush()
+                process.wait()
+        except:
+            print("Oops!",sys.exc_info()[0],"occured.")
+            counter += 1
+            continue
+    print(counter)
 
 def get_column_from_transaction(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int):
-    transaction_hashes_filename = 'trans_hashes.txt'
-    transaction_filename = 'transactions.csv'
+    transaction_hashes_filename = 'trans_hashes_for_compare.txt'
+    transaction_filename = 'transactions_for_compare.csv'
 
     cmd2 = [
                 "ethereumetl",
@@ -98,8 +92,8 @@ def get_column_from_transaction(START_BLOCK: int, END_BLOCK: int, STEP_SIZE: int
 
 def get_receipt_and_logs(START_BLOCK, END_BLOCK, STEP_SIZE):
     get_column_from_transaction(START_BLOCK, END_BLOCK, STEP_SIZE)
-    transaction_hashes_filename = 'trans_hashes.txt'
-    receipts_filename = 'receipts.csv'
+    transaction_hashes_filename = 'trans_hashes_for_compare.txt'
+    receipts_filename = 'receipts_for_compare.csv'
     cmd3= [
             "ethereumetl",
             "export_receipts_and_logs",
@@ -110,7 +104,7 @@ def get_receipt_and_logs(START_BLOCK, END_BLOCK, STEP_SIZE):
             "--receipts-output",
             receipts_filename,
             "--logs-output",
-            "logs.csv"
+            "logs_for_compare.csv"
     ]
     process3 = subprocess.Popen(cmd3, bufsize=1, universal_newlines=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     if process3.stdout:
@@ -119,3 +113,7 @@ def get_receipt_and_logs(START_BLOCK, END_BLOCK, STEP_SIZE):
                 sys.stdout.flush()
         process3.wait()
         
+if __name__ == "__main__":
+    start = 11560001
+    end = 13538010
+    get_token_transfers(start,end,1000000)

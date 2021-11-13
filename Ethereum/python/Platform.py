@@ -18,25 +18,28 @@ START_BLOCK=11559999
 END_BLOCK=13504400 
 STEP_SIZE=2000000
 
-nums = [defaultdict(int) for i in range(10)]
-volume = [defaultdict(int) for i in range(10)]
-address = [defaultdict(set) for i in range(10)]
+nums = [defaultdict(int) for i in range(12)]
+volume = [defaultdict(int) for i in range(12)]
+address = [defaultdict(set) for i in range(12)]
 
-files = ['transactions.csv','token_transfers.csv']
+#files = ['transactions.csv'] #,'token_transfers.csv']
 def compare_platforms(): 
-    with open('result.txt', 'w') as f:
-        for file in files:
-            with open(file,'r') as file_r:
-                reader = pd.read_csv(file_r)
-                for row in reader.itertuples():
-                    address = str(row.to_address).lower()
-                    if address in platforms:
-                        month = datetime.datetime.fromtimestamp(row.block_timestamp).strftime("%m")
-                        temp = int(month)-1
-                        nums[temp][platforms[address]] += 1
-                        volume[temp][platforms[address]] += ether(int(row.value))
-                        address[temp][platforms[address]].add(str(row.from_address).lower())
+    counter = 0
+    with open('transactions.csv','r') as file_r:
+        print("1")
+        reader = pd.read_csv(file_r)
+        print("2")
+        for row in reader.itertuples():
+            print("3")
+            address = str(row.to_address).lower()
+            if address in platforms:
+                month = datetime.datetime.fromtimestamp(row.block_timestamp).strftime("%m")
+                temp = int(month)-1
+                nums[temp][platforms[address]] += 1
+                volume[temp][platforms[address]] += ether(int(row.value))
+                address[temp][platforms[address]].add(str(row.from_address).lower())
 
+            with open('result.txt','a') as f:
                 f.write(file + "\n" +str(nums)+"\n"+ str(volume)+"\n"+str(address)+"\n")
 
 
@@ -50,7 +53,7 @@ def compare_platforms():
     #draw_mult_bars('Volume of different platforms',values.keys(),values.values,'Platforms','Volume','platforms-volume')
 
 if __name__ == "__main__":
-    get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
-    get_token_transfers(START_BLOCK, END_BLOCK, STEP_SIZE)
+    #get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
+    #get_token_transfers(START_BLOCK, END_BLOCK, STEP_SIZE)
     compare_platforms()
 

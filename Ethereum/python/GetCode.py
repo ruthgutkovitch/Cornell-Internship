@@ -38,8 +38,8 @@ def getCode(file_name):
 
 
 if __name__ == "__main__":
-    #get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
-    #get_token_transfers(START_BLOCK, END_BLOCK, STEP_SIZE)
+    get_blocks_and_transactions(START_BLOCK, END_BLOCK, STEP_SIZE)
+    get_token_transfers(START_BLOCK, END_BLOCK, STEP_SIZE)
     res_token = getCode('token_transfers.csv')
     res_tx = getCode('transactions.csv')
     result = [0] * 2
